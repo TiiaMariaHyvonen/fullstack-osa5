@@ -17,6 +17,7 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
+  const [createVisible, setCreateVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -67,59 +68,65 @@ const App = () => {
       author: newAuthor,
       url: newUrl
     }
-
     const returnedBlog = await blogService.create(blogObject)
     setMessage(`a new blog ${newTitle} by ${newAuthor} added`)
     setBlogs(blogs.concat(returnedBlog))
     setTitle('')
     setAuthor('')
     setUrl('')
+    setCreateVisible(false)
     setTimeout(() => {
       setMessage(null)
     }, 5000)
 
   }
 
+  const blogForm = () => {
+    const hideWhenVisible = { display: createVisible ? 'none' : '' }
+    const showWhenVisible = { display: createVisible ? '' : 'none' }
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value)
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setCreateVisible(true)}>create blog</button>
+        </div>
+        <div style={showWhenVisible}>
+      <BlogForm addBlog={addBlog} 
+        newTitle={newTitle} 
+        newAuthor={newAuthor} 
+        newUrl={newUrl} 
+        handleTitleChange={({ target }) => setTitle(target.value)} 
+        handleAuthorChange={({ target }) => setAuthor(target.value)} 
+        handleUrlChange={({ target }) => setUrl(target.value)}/>
+          <button onClick={() => setCreateVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
   }
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value)
-  }
-
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value)
-  }
-
-  const handleAuthorChange = (event) => {
-    setAuthor(event.target.value)
-  }
-
-  const handleUrlChange = (event) => {
-    setUrl(event.target.value)
-  }
+ 
 
   if (user === null) {
     return (
     <div>
       <Notification message={errorMessage} messageType='error' />
-      <LoginForm handleLogin={handleLogin} username={username} handleUsernameChange={handleUsernameChange} password={password} handlePasswordChange={handlePasswordChange} />
+      <LoginForm handleLogin={handleLogin} 
+                 username={username} 
+                 handleUsernameChange={({ target }) => setUsername(target.value)} 
+                 password={password} 
+                 handlePasswordChange={({ target }) => setPassword(target.value)} />
       </div>
     )
   }
   
   return (
     <div>
-      {user.name} logged in.  
+      {user.name} logged in   
       <button onClick={() => logOut()}>
           logout
       </button>
 
       <Notification message={message} messageType='message' />
-      <h2>create new</h2>
-      <BlogForm addBlog={addBlog} newTitle={newTitle} newAuthor={newAuthor} newUrl={newUrl} handleTitleChange={handleTitleChange} handleAuthorChange={handleAuthorChange} handleUrlChange={handleUrlChange}/>
+      {blogForm()}
       <h2>blogs</h2>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
