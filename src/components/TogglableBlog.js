@@ -10,7 +10,7 @@ const TogglableBlogs = (props) => {
     setVisible(!visible)
   }
 
-   const blogStyle = {
+  const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
@@ -18,11 +18,11 @@ const TogglableBlogs = (props) => {
     marginBottom: 5
   }
 
-  
+
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
-      {props.blogTitle}
+        {props.blogTitle}
         <button onClick={toggleVisibility}>{props.buttonLabel}</button>
       </div>
       <div style={showWhenVisible}>
