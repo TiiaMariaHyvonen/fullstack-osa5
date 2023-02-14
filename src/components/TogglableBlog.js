@@ -17,6 +17,7 @@ const TogglableBlogs = (props) => {
     borderWidth: 1,
     marginBottom: 5
   }
+
   
   return (
     <div style={blogStyle}>

@@ -33,7 +33,6 @@ const App = () => {
   }, [])
 
   const blogFormRef = useRef()
-  const blogRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -54,7 +53,6 @@ const App = () => {
       }, 5000)
     }
   }
-  
 
   const logOut = (event) => {
     window.localStorage.clear()
@@ -65,20 +63,40 @@ const App = () => {
     const returnedBlog = await blogService.create(blogObject)
     blogFormRef.current.toggleVisibility()
     setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+    // This field is added temporarity to check if current user added this blog (is able to delete it)
+    // it is checked in Blog component (./components/Blog.js)
+    returnedBlog.added = true
     setBlogs(blogs.concat(returnedBlog))
     setTimeout(() => {
       setMessage(null)
     }, 5000)
   }
 
+  const removeBlog = async (blogId) => {
+    await blogService.remove(blogId) 
+    setMessage(`blog deleted`)
+    setBlogs(blogs.filter(blog => blog.id !== blogId))
+    setTimeout(() => {
+      setMessage(null)
+    }, 3000)
+    
+  }
+
   const updateLikes = async (blogId, blogObject) => {
     const returnedBlog = await blogService.update(blogId, blogObject)
     setMessage(`${returnedBlog.title} has ${returnedBlog.likes} likes`)
+    returnedBlog.added = true
     setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
     setTimeout(() => {
       setMessage(null)
     }, 3000)
   }
+
+  const sortedBlogs = (
+    blogs.sort(
+      (b1, b2) => (b1.likes < b2.likes) ? 1 : (b1.likes > b2.likes) ? -1 : 0
+    )
+  )
 
   if (user === null) {
     return (
@@ -105,10 +123,10 @@ const App = () => {
       <Togglable buttonLabel='create blog' ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
       </Togglable>
-      {blogs.map(blog =>
+      {sortedBlogs.map(blog =>
       <div key={blog.id}>
       <TogglableBlog buttonLabel='view' blogTitle={blog.title}>
-          <Blog blog={blog} updateLikes={updateLikes} />
+          <Blog blog={blog} updateLikes={updateLikes} user={user} removeBlog={removeBlog}/>
       </TogglableBlog>
       </div>
       )}
