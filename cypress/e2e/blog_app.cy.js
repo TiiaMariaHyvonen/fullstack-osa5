@@ -92,11 +92,34 @@ describe('Blog app', function() {
           cy.get('html').should('not.contain', '#delete-button')
         })
 
-        it.only('order of blogs is based on likes', function () {
-          //cy.contains('Go To Statement Considered Harmful')
-          //cy.get('#view-button').click()
-          //cy.get('#like-button').click()
-          //cy.contains('Go To Statement Considered Harmful has 1 likes')
+        it('order of blogs is based on likes', function () {
+          cy.get('#view-button').click()
+          cy.get('#like-button').click()
+          cy.get('#hide-button').click()
+
+          cy.contains('create blog').click()
+          cy.get('#title').type('First class tests')
+          cy.get('#author').type('Robert C. Martin')
+          cy.get('#url').type('http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html')
+          cy.get('#create-button').click()
+
+          cy.contains('create blog').click()
+          cy.get('#title').type('TDD harms architecture')
+          cy.get('#author').type('Robert C. Martin')
+          cy.get('#url').type('http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html')
+          cy.get('#create-button').click()
+
+          cy.contains('TDD harms architecture')
+            .contains('view')
+            .click()
+
+          cy.contains('TDD harms architecture').parent().find('#like-button').click().click()
+
+          cy.get('.blog').eq(0).should('contain', 'TDD harms architecture')
+          cy.get('.blog').eq(1).should('contain', 'Go To Statement Considered Harmful')
+          cy.get('.blog').eq(2).should('contain', 'First class tests')
+
+
         })
 
       })
