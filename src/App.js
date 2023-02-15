@@ -43,6 +43,7 @@ const App = () => {
         'loggedNoteappUser', JSON.stringify(user)
       )
       setUser(user)
+      console.log(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
