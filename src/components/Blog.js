@@ -1,4 +1,4 @@
-const Blog = ({ blog, updateLikes, user, removeBlog }) => {
+const Blog = ({ blog, updateLikes, username, removeBlog }) => {
 
   const addLike = () => {
     const blogObject = {
@@ -18,7 +18,7 @@ const Blog = ({ blog, updateLikes, user, removeBlog }) => {
   }
 
   const deleteToShow = () => {
-    if (blog.added || blog.user.username === user.username) {
+    if (blog.added || blog.user.username === username) {
       return (<button onClick={deleteBlog}>delete</button>)
     }
     return null

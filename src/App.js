@@ -110,6 +110,7 @@ const App = () => {
     )
   }
 
+
   return (
     <div>
       {user.name} logged in
@@ -125,7 +126,7 @@ const App = () => {
       {sortedBlogs.map(blog =>
         <div key={blog.id}>
           <TogglableBlog buttonLabel='view' blogTitle={blog.title}>
-            <Blog blog={blog} updateLikes={updateLikes} user={user} removeBlog={removeBlog}/>
+            <Blog blog={blog} updateLikes={updateLikes} username={user.username} removeBlog={removeBlog}/>
           </TogglableBlog>
         </div>
       )}
