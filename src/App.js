@@ -23,7 +23,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -40,10 +40,10 @@ const App = () => {
         username, password,
       })
       window.localStorage.setItem(
-        'loggedNoteappUser', JSON.stringify(user)
+        'loggedBlogappUser', JSON.stringify(user)
       )
+      blogService.setToken(user.token)
       setUser(user)
-      console.log(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -56,6 +56,10 @@ const App = () => {
 
   const logOut = () => {
     window.localStorage.clear()
+    //following lines makes sure that delete button is not showed when different
+    //user logs in after logout. This was not problem with manual testing with chrome,
+    //but cypress exercise (5.22) failed without it
+    setBlogs(blogs.map(blog => blog.added ? { ...blog, added: false } : blog))
     setUser(null)
   }
 
@@ -115,7 +119,7 @@ const App = () => {
   return (
     <div>
       {user.name} logged in
-      <button onClick={() => logOut()}>
+      <button id="logout-button" onClick={() => logOut()}>
           logout
       </button>
 

@@ -19,7 +19,7 @@ const Blog = ({ blog, updateLikes, username, removeBlog }) => {
 
   const deleteToShow = () => {
     if (blog.added || (typeof blog.user !== 'undefined' && blog.user.username === username)) {
-      return (<button onClick={deleteBlog}>delete</button>)
+      return (<button id="delete-button" onClick={deleteBlog}>delete</button>)
     }
     return null
   }
@@ -28,7 +28,7 @@ const Blog = ({ blog, updateLikes, username, removeBlog }) => {
     <div>
       <div>{blog.title}</div>
       <div>{blog.url}</div>
-      <div>{blog.likes} <button onClick={addLike}>like</button></div>
+      <div>{blog.likes} <button id="like-button" onClick={addLike}>like</button></div>
       <div>{blog.author}</div>
       {deleteToShow()}
     </div>
