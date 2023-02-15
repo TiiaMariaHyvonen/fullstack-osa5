@@ -15,11 +15,22 @@ describe('Blog ', function() {
     cy.get('#username')
     cy.get('#password')
   })
-/*  it('user can login', function () {
-    cy.get('#username').type('root')
-    cy.get('#password').type('sekret')
-    cy.get('#login-button').click()
 
-    cy.contains('logged in')
-  })*/
+  describe('Login',function() {
+    it('succeeds with correct credentials', function() {
+      cy.get('#username').type('root')
+      cy.get('#password').type('salainen')
+      cy.get('#login-button').click()
+
+      cy.contains('logged in')
+    })
+
+    it('fails with wrong credentials', function() {
+      cy.get('#username').type('root')
+      cy.get('#password').type('wrong')
+      cy.get('#login-button').click()
+
+      cy.contains('wrong credentials')
+    })
+  })
 })
