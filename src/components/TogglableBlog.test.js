@@ -8,12 +8,9 @@ import Blog from './Blog'
 
 test('renders content', () => {
   const blogTitle = 'Go To Statement Considered Harmful'
-
   render(<TogglableBlog blogTitle={blogTitle} />)
-
   screen.getByText('Go To Statement Considered Harmful')
 })
-
 
 
 describe('Show all content after clicking view button', () => {
@@ -28,14 +25,12 @@ describe('Show all content after clicking view button', () => {
     user: { username: 'root' }
   }
 
-  const fillerFunction = () => {console.log('function for testing')}
-  const username = 'root'
 
   beforeEach(() => {
     container = render(
       <TogglableBlog buttonLabel="view...">
         <div className="testDiv" >
-          <Blog blog={blog} updateLikes={fillerFunction} username={username} removeBlog={fillerFunction}/>
+          <Blog blog={blog} username="root" />
         </div>
       </TogglableBlog>
     ).container
@@ -46,7 +41,7 @@ describe('Show all content after clicking view button', () => {
     expect(div).toHaveStyle('display: none')
   })
 
-  test('after clicking the button, children are displayed', async () => {
+  test('after clicking the button, children are displayed including url, likes and author', async () => {
     const user = userEvent.setup()
     const button = screen.getByText('view...')
     await user.click(button)

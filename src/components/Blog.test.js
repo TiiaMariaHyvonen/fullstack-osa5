@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
-test('clicking the button calls event handler once', async () => {
+test('clicking the button twice calls event handler twice', async () => {
   const blog = {
     id: '5a422aa71b54a676234d17f8',
     title: 'Go To Statement Considered Harmful',
