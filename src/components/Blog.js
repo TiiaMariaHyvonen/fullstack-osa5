@@ -18,7 +18,7 @@ const Blog = ({ blog, updateLikes, username, removeBlog }) => {
   }
 
   const deleteToShow = () => {
-    if (blog.added || blog.user.username === username) {
+    if (blog.added || (typeof blog.user !== 'undefined' && blog.user.username === username)) {
       return (<button onClick={deleteBlog}>delete</button>)
     }
     return null
