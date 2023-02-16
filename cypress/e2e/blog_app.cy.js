@@ -30,14 +30,15 @@ describe('Blog app', function() {
       cy.get('#password').type('wrong')
       cy.get('#login-button').click()
 
-      cy.contains('wrong credentials')
+      cy.get('.error').contains('wrong credentials')
+      cy.get('html').should('not.contain', 'logged in')
     })
+
+
 
     describe('When logged in', function() {
       beforeEach(function() {
-        cy.get('#username').type('root')
-        cy.get('#password').type('salainen')
-        cy.get('#login-button').click()
+        cy.login({ username: 'root', password: 'salainen' })
       })
 
       it('A blog can be created', function() {
@@ -49,27 +50,27 @@ describe('Blog app', function() {
         cy.contains('Go To Statement Considered Harmful')
       })
 
-      describe('When also a blog exists', function() {
+      describe('When a blog exists', function() {
         beforeEach(function() {
-          cy.contains('create blog').click()
-          cy.get('#title').type('Go To Statement Considered Harmful')
-          cy.get('#author').type('Edsger W. Dijkstra')
-          cy.get('#url').type('http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html')
-          cy.get('#create-button').click()
+          cy.createBlog({
+            title: 'Go To Statement Considered Harmful',
+            author: 'Edsger W. Dijkstra',
+            url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html'
+          })
         })
 
         it('it can be liked', function () {
           cy.contains('Go To Statement Considered Harmful')
           cy.get('#view-button').click()
           cy.get('#like-button').click()
-          cy.contains('Go To Statement Considered Harmful has 1 likes')
+          cy.get('.message').contains('Go To Statement Considered Harmful has 1 likes')
         })
 
         it('it can be deleted', function () {
           cy.contains('Go To Statement Considered Harmful')
           cy.get('#view-button').click()
           cy.get('#delete-button').click()
-          cy.contains('blog deleted')
+          cy.get('.message').contains('blog deleted')
           cy.get('html').should('not.contain', 'Go To Statement Considered Harmful')
         })
 
@@ -84,30 +85,29 @@ describe('Blog app', function() {
             password: 'salainen'
           }
           cy.request('POST', 'http://localhost:3003/api/users/', user)
-
-          cy.get('#username').type('test')
-          cy.get('#password').type('salainen')
-          cy.get('#login-button').click()
+          cy.login({ username: 'test', password: 'salainen' })
           cy.get('#view-button').click()
           cy.get('html').should('not.contain', '#delete-button')
         })
 
         it('order of blogs is based on likes', function () {
+          /* First like the existing blog, then create two new blog and like the one created last
+             twice, then order should be: last created, first created and secondly created
+          */
           cy.get('#view-button').click()
           cy.get('#like-button').click()
           cy.get('#hide-button').click()
 
-          cy.contains('create blog').click()
-          cy.get('#title').type('First class tests')
-          cy.get('#author').type('Robert C. Martin')
-          cy.get('#url').type('http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html')
-          cy.get('#create-button').click()
-
-          cy.contains('create blog').click()
-          cy.get('#title').type('TDD harms architecture')
-          cy.get('#author').type('Robert C. Martin')
-          cy.get('#url').type('http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html')
-          cy.get('#create-button').click()
+          cy.createBlog({
+            title: 'First class tests',
+            author: 'Robert C. Martin',
+            url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html'
+          })
+          cy.createBlog({
+            title: 'TDD harms architecture',
+            author: 'Robert C. Martin',
+            url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html'
+          })
 
           cy.contains('TDD harms architecture')
             .contains('view')
