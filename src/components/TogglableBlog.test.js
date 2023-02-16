@@ -6,7 +6,7 @@ import TogglableBlog from './TogglableBlog'
 import Blog from './Blog'
 
 
-test('renders content', () => {
+test('renders title', () => {
   const blogTitle = 'Go To Statement Considered Harmful'
   render(<TogglableBlog blogTitle={blogTitle} />)
   screen.getByText('Go To Statement Considered Harmful')
